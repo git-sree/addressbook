@@ -1,9 +1,6 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'env', defaultValue: 'staging', description: 'enter environment value')
-    }
     stages {
         stage('Compile') {
             steps {
