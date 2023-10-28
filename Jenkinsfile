@@ -13,6 +13,9 @@ pipeline {
         choice(name: 'build_env', choices: ['staging','dev','prod'], description: 'select env for staging')
     }
 
+    environment{
+        dev_server='ec2-user@172.31.13.253'
+    }
     stages {
         stage('Compile') {
             agent any
@@ -25,7 +28,7 @@ pipeline {
             }
         }
          stage('Test') {
-            agent any
+            agent {label 'apple-slave2'}
             when{
                 expression{
                     params.execute == true
@@ -44,11 +47,13 @@ pipeline {
             }
         }
         stage('Package') {
-            agent {label 'apple-slave2'}
+            agent any
             steps {
                 script {
+                    sshagent(['aws-key'])
                     echo 'PACKAGE-Hello World'
-                    sh "mvn package"
+                    sh "scp -o StrictHostKeyChecking=no server-config.sh ${dev_server}:/home/ec2-user"
+                    sh "ssh -o StrictHostKeyChecking=no ${dev_server} 'bash ~/server-config.sh'"
                 }
             }
         }
