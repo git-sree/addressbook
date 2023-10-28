@@ -9,7 +9,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo 'COMEPILE-Hello World'
-                echo "compie env is: ${params.evn}"
+                echo "compie env is: ${params.env}"
             }
         }
          stage('Test') {
