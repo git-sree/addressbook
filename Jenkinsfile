@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     tools {
         maven 'mymaven'
@@ -15,6 +15,7 @@ pipeline {
 
     stages {
         stage('Compile') {
+            agent any
             steps {
                 script {
                     echo 'COMEPILE-Hello World'
@@ -24,6 +25,7 @@ pipeline {
             }
         }
          stage('Test') {
+            agent any
             when{
                 expression{
                     params.execute == true
@@ -37,6 +39,7 @@ pipeline {
             }
         }
         stage('Package') {
+            agent {label 'apple-slave2'}
             steps {
                 script {
                     echo 'PACKAGE-Hello World'
@@ -45,6 +48,7 @@ pipeline {
             }
         }
         stage('Deploy') {
+            agent any
             input{
                 message "select the version to deploy."
                 ok "version selected."
