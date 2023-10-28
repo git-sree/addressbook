@@ -50,10 +50,11 @@ pipeline {
             agent any
             steps {
                 script {
-                    sshagent(['aws-key'])
-                    echo 'PACKAGE-Hello World'
-                    sh "scp -o StrictHostKeyChecking=no server-config.sh ${dev_server}:/home/ec2-user"
-                    sh "ssh -o StrictHostKeyChecking=no ${dev_server} 'bash ~/server-config.sh'"
+                    sshagent(['aws-key']) {
+                        echo 'PACKAGE-Hello World'
+                        sh "scp -o StrictHostKeyChecking=no server-config.sh ${dev_server}:/home/ec2-user"
+                        sh "ssh -o StrictHostKeyChecking=no ${dev_server} 'bash ~/server-config.sh'"
+                    }
                 }
             }
         }
