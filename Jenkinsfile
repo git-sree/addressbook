@@ -3,6 +3,8 @@ pipeline {
 
     parameters {
         string(name: 'env', defaultValue: 'test', description: 'env to compile')
+        string(name: 'branch', defaultValue: 'main', description: 'branch is main')
+        choice(name: 'build_env', defaultValue: 'staging', choices: ['staging','dev','prod'], description: 'select env for staging')
     }
 
     stages {
