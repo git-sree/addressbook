@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'mymaven'
+        jdk 'myjava'
+    }
+
     parameters {
         string(name: 'env', defaultValue: 'test', description: 'env to compile')
         string(name: 'branch', defaultValue: 'main', description: 'branch is main')
@@ -11,8 +16,11 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                echo 'COMEPILE-Hello World'
-                echo "compie env is: ${params.env}"
+                script {
+                    echo 'COMEPILE-Hello World'
+                    echo "compie env is: ${params.env}"
+                    sh "mvn compile"
+                }
             }
         }
          stage('Test') {
@@ -22,12 +30,18 @@ pipeline {
                 }
             }
             steps {
-                echo 'TEST-Hello World'
+                script{
+                    echo 'TEST-Hello World'
+                    sh "mvn test"
+                }
             }
         }
         stage('Package') {
             steps {
-                echo 'PACKAGE-Hello World'
+                script {
+                    echo 'PACKAGE-Hello World'
+                    sh "mvn package"
+                }
             }
         }
         stage('Deploy') {
@@ -39,7 +53,9 @@ pipeline {
                 }
             }
             steps {
-                echo 'deploy-Hello World'
+                script {
+                    echo 'Deploy-Hello World'
+                }
             }
         }
         
