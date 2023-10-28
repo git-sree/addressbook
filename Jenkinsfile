@@ -30,5 +30,18 @@ pipeline {
                 echo 'PACKAGE-Hello World'
             }
         }
+        stage('Deploy') {
+            input{
+                message "select the version to deploy."
+                ok "version selected."
+                parameters{
+                    choice(name: 'new version', choices: ['1.0','2.0','3.0'])
+                }
+            }
+            steps {
+                echo 'deploy-Hello World'
+            }
+        }
+        
     }
 }
