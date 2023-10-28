@@ -5,7 +5,6 @@ pipeline {
         stage('Compile') {
             steps {
                 echo 'COMEPILE-Hello World'
-                echo "Environment: ${params.env}"
             }
         }
          stage('Test') {
