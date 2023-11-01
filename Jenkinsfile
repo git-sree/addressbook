@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('compile') {
             steps {
-                scripts {
+                script {
                     echo "compile- hello world"
                 }
             }
@@ -12,7 +12,7 @@ pipeline {
 
         stage('test') {
             steps {
-                scripts {
+                script {
                     echo "test- hello world"
                 }
             }
@@ -20,7 +20,7 @@ pipeline {
 
         stage('package') {
             steps {
-                scripts {
+                script {
                     echo "package- hello world"
                 }
             }
