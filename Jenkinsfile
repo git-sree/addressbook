@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'mymaven'
+        jdk 'myjava'
+    }
+
     parameters {
         string(name: 'env', defaultValue: 'staging', description: 'Name of Environment')
         booleanParam(name: 'execute', defaultValue: true, description: 'decide job to run')
