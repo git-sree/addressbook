@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     tools {
         maven 'mymaven'
@@ -14,6 +14,7 @@ pipeline {
 
     stages {
         stage('compile') {
+            agent any
             steps {
                 script {
                     echo "compile- hello world"
@@ -25,6 +26,7 @@ pipeline {
         }
 
         stage('test') {
+            agent any
             when {
                 expression{
                     params.execute == true
@@ -38,6 +40,7 @@ pipeline {
         }
 
         stage('package') {
+            agent {label 'develop-server'}
             steps {
                 script {
                     echo "package- hello world"
@@ -46,6 +49,9 @@ pipeline {
         }
 
         stage('deploy') {
+            agent {
+                label 'deploy-server'
+            }
             input {
                 message "Select version to deploy"
                 ok "version selected"
