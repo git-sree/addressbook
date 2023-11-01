@@ -41,11 +41,11 @@ pipeline {
                     sh "mvn test"
                 }
 
-                post{
+                /*post{
                     always {
                         echo "post block added"
                     }
-                }
+                }*/
             }
         }
 
