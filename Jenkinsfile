@@ -38,6 +38,12 @@ pipeline {
                     echo "test- hello world"
                     sh "mvn test"
                 }
+
+                post{
+                    always {
+                        echo "post block added"
+                    }
+                }
             }
         }
 
