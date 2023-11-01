@@ -6,7 +6,7 @@ pipeline {
         jdk 'myjava'
     }
     environment {
-        ssh_agent_dev_server='cks@172.31.47.165'
+        ssh_agent_dev_server='ec2-user@172.31.47.165'
     }
     parameters {
         string(name: 'env', defaultValue: 'staging', description: 'Name of Environment')
@@ -40,12 +40,7 @@ pipeline {
                     echo "test- hello world"
                     sh "mvn test"
                 }
-
-                /*post{
-                    always {
-                        echo "post block added"
-                    }
-                }*/
+                
             }
         }
 
