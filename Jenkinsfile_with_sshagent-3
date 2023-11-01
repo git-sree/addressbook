@@ -41,11 +41,11 @@ pipeline {
                     sh "mvn test"
                 }
 
-                post{
+                /*post{
                     always {
                         echo "post block added"
                     }
-                }
+                }*/
             }
         }
 
@@ -53,7 +53,7 @@ pipeline {
             agent any
             steps {
                 script {
-                    sshagent(['aws-key-new']) {
+                    sshagent(['aws-key']) {
                         echo "package- hello world"
                         sh "scp -o StrictHostKeyChecking=no server-config.sh ${ssh_agent_dev_server}:/home/ec2-user"
                         sh "ssh -o StrictHostKeyChecking=no ${ssh_agent_dev_server} 'bash ~/server-config.sh'"
