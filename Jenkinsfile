@@ -20,6 +20,11 @@ pipeline {
         }
 
         stage('test') {
+            when {
+                expression{
+                    params.execute == true
+                }
+            }
             steps {
                 script {
                     echo "test- hello world"
