@@ -21,6 +21,7 @@ pipeline {
                     echo "${params.env}"
                     echo "${params.version}"
                     echo "${params.execute}"
+                    sh "mvn compile"
                 }
             }
         }
@@ -35,6 +36,7 @@ pipeline {
             steps {
                 script {
                     echo "test- hello world"
+                    sh "mvn test"
                 }
             }
         }
@@ -44,6 +46,7 @@ pipeline {
             steps {
                 script {
                     echo "package- hello world"
+                    sh "mvn package"
                 }
             }
         }
