@@ -1,19 +1,26 @@
-# Stage 1: Build stage
-FROM maven:3.8.4-openjdk-11-slim AS build-stage
+FROM tomcat:8.5.72-jdk8-openjdk-buster
 
-WORKDIR /app
+env MAVEN_HOME /usr/share/maven
+env MAVEN_VERSION 3.8.4
 
-copy ./pom.xml ./pom.xml
+WORKDIR  /app
 
-copy src ./src
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar xzf - -C /usr/share && \
+    mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven && \
+    ln -s /usr/share/maven/bin/mvn /usr/bin/mvn && \
+    apt-get clean && \
+     rm -rf /var/lib/apt/lists/*
 
-run mvn package
+COPY pom.xml .
+COPY src  ./src
 
-# Stage 2: Production stage
-FROM tomcat:8.5.78-jdk11-openjdk-slim
 
-COPY --from=build-stage /app/target/*.war /usr/local/tomcat/webapps/
+RUN mvn clean package
 
-expose 8080
+RUN rm -rf /usr/local/tomcat/webapps/*
+RUN cp /app/target/addressbook.war /usr/local/tomcat/webapps/
 
+EXPOSE 8080
 CMD ["catalina.sh", "run"]
