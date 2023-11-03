@@ -16,4 +16,4 @@ else
     git checkout AS-55
 fi
 # mvn package
-sudo docker image build $1:$2 /home/ec2-user/addressbook .
+sudo docker image build -t $1:$2 /home/ec2-user/addressbook
