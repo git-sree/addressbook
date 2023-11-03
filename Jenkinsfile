@@ -66,7 +66,7 @@ pipeline {
                             sh "scp -o StrictHostKeyChecking=no server-config.sh ${docker_develop_server}:/home/ec2-user"
                             sh "ssh -o StrictHostKeyChecking=no ${docker_develop_server} 'bash ~/server-config.sh ${IMAGE_NAME} ${BUILD_NUMBER}'"
                             sh "ssh ${docker_develop_server} sudo docker login -u ${dockeruser} -p ${dockerpwd}"
-                            ssh "ssh ${docker_develop_server} sudo docker image push ${IMAGE_NAME}:${BUILD_NUMBER}"
+                            ss "ssh ${docker_develop_server} sudo docker image push ${IMAGE_NAME}:${BUILD_NUMBER}"
 
                             //sh "mvn package"
                         }
