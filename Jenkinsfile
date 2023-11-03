@@ -6,7 +6,12 @@ pipeline {
         jdk 'myjava'
     }
     environment {
+        // Agent server using ssh agent to run package
         ssh_agent_dev_server='ec2-user@172.31.47.165'
+        // dev, deploy agents using sshagent using docker 
+        docker_develop_server='ec2-user@172.31.32.165'
+        docker_deploy_server='ec2-user@172.31.40.11'
+        IMAGE_NAME='dockersree6/java-app-docker'
     }
     parameters {
         string(name: 'env', defaultValue: 'staging', description: 'Name of Environment')
@@ -16,7 +21,8 @@ pipeline {
 
     stages {
         stage('compile') {
-            agent {label 'develop-server'}
+            // agent {label 'develop-server'}
+            agent any
             steps {
                 script {
                     echo "compile- hello world"
@@ -29,7 +35,8 @@ pipeline {
         }
 
         stage('test') {
-            agent {label 'deploy-server'}
+            // agent {label 'deploy-server'}
+            agent any
             when {
                 expression{
                     params.execute == true
@@ -54,10 +61,15 @@ pipeline {
             steps {
                 script {
                     sshagent(['aws-key']) {
-                        echo "package- hello world"
-                        sh "scp -o StrictHostKeyChecking=no server-config.sh ${ssh_agent_dev_server}:/home/ec2-user"
-                        sh "ssh -o StrictHostKeyChecking=no ${ssh_agent_dev_server} 'bash ~/server-config.sh'"
-                        //sh "mvn package"
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerpwd', usernameVariable: 'dockeruser')]) {
+                            echo "package- hello world"
+                            sh "scp -o StrictHostKeyChecking=no server-config.sh ${docker_develop_server}:/home/ec2-user"
+                            sh "ssh -o StrictHostKeyChecking=no ${docker_develop_server} 'bash ~/server-config.sh ${IMAGE_NAME} ${BUILD_NUMBER}'"
+                            sh "ssh ${docker_develop_server} sudo docker login -u ${dockeruser} -p ${dockerpwd}"
+                            ssh "ssh ${docker_develop_server} sudo docker image push ${IMAGE_NAME}:${BUILD_NUMBER}"
+
+                            //sh "mvn package"
+                        }
                     }
                     
                 }
@@ -75,7 +87,15 @@ pipeline {
             }
             steps {
                 script {
-                    echo "deploy- hello world"
+                    sshagent(['aws-key']) {
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerpwd', usernameVariable: 'dockeruser')]) {
+                            echo "deploy- hello world"
+                            sh "ssh -o StrictHostKeyChecking=no ${docker_deploy_server} sudo yum install docker -y"
+                            sh "ssh ${docker_deploy_server} sudo systemctl start docker"
+                            sh "ssh ${docker_deploy_server} sudo docker login -u ${dockeruser} -p ${dockerpwd}"
+                            sh "${docker_deploy_server} sudo docker container run -d --name web-ab -p 6666:8080 ${IMAGE_NAME}:${BUILD_NUMBER}"
+                        }
+                    }
                 }
             }
         }
