@@ -93,7 +93,7 @@ pipeline {
                             sh "ssh -o StrictHostKeyChecking=no ${docker_deploy_server} sudo yum install docker -y"
                             sh "ssh ${docker_deploy_server} sudo systemctl start docker"
                             sh "ssh ${docker_deploy_server} sudo docker login -u ${dockeruser} -p ${dockerpwd}"
-                            sh "${docker_deploy_server} sudo docker run -d --name web-ab -p 6666:8080 ${IMAGE_NAME}:${BUILD_NUMBER}"
+                            sh "ssh ${docker_deploy_server} sudo docker container run -d --name web-ab --rm -p 6666:8080 ${IMAGE_NAME}:${BUILD_NUMBER}"
                         }
                     }
                 }
